@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  minecraft-scratch-bridge:
+    build: .
+    container_name: minecraft-scratch-bridge
+    ports:
+      # ホストのポート5000をコンテナのポート5000にマッピング
+      - "5000:5000"
+    environment:
+      # Minecraft Pi Edition (Reborn)が動作しているホストを指定
+      # Docker for Linux/Mac/Windowsでは 'host.docker.internal' がホストを指す特別なDNS名です。
+      # これが機能しない場合、Raspberry PiのローカルIPアドレスを指定してください。
+      # (例: MINECRAFT_HOST=192.168.1.10)
+      # Minecraftがコンテナと同じマシンで実行されている場合は、これが機能するはずです。
+      MINECRAFT_HOST: host.docker.internal
+      # Minecraft Pi Edition (Reborn)のデフォルトポート
+      MINECRAFT_PORT: 4711
+      # Pythonの出力をバッファリングしないように設定 (ログがすぐに見えるように)
+      PYTHONUNBUFFERED: 1
+    # Raspberry Pi (Linux)で host.docker.internal を使うために必要
+    # これにより、コンテナの /etc/hosts に host.docker.internal のエントリが追加されます。
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
